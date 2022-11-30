@@ -50,14 +50,12 @@ void AQuest::TakeQuest(AActor* Character)
 	for (int32 i = 0; i < Objectives.Num(); i++)
 	{
 		auto* Objective = Objectives[i];
-		if (Objective == nullptr)
+		if (Objective)
 		{
-			continue;
+			Objective->ActivateObjective(Character);
+			Objective->bCanCompleted = i == 0 || !bKeepObjectivesOrder;
+			Objective->OnObjectiveCompleted.AddUObject(this, &ThisClass::OnObjectiveCompleted);
 		}
-
-		Objective->ActivateObjective(Character);
-		Objective->bCanCompleted = i == 0 || !bKeepObjectivesOrder;
-		Objective->OnObjectiveCompleted.AddUObject(this, &ThisClass::OnObjectiveCompleted);
 	}
 	bIsTaken = true;
 }
@@ -84,6 +82,16 @@ void AQuest::AddInteractObjective()
 void AQuest::AddLocationObjective()
 {
 	Objectives.Add(NewObject<ULocationObjective>(this));
+}
+
+void AQuest::AddKillObjective()
+{
+	Objectives.Add(NewObject<UKillObjective>(this));
+}
+
+void AQuest::AddCollectObjective()
+{
+	Objectives.Add(NewObject<UCollectObjective>(this));
 }
 
 #endif

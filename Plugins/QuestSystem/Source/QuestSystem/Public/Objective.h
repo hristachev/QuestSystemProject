@@ -12,6 +12,7 @@ enum class EObjectiveType : uint8
 	Ot_Location,
 	Ot_Interact,
 	Ot_Collect,
+	Ot_Kill,
 };
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnObjectiveCompleted, class UObjective*);
@@ -70,4 +71,36 @@ public:
 
 	UPROPERTY(EditAnywhere, meta = (AllowedClasses = "LocationMarker"))
 	AActor* Marker;
+};
+
+UCLASS()
+class UCollectObjective : public UObjective
+{
+	GENERATED_BODY()
+
+public:
+
+	UCollectObjective();
+
+	virtual void ActivateObjective(AActor* Instigator) override;
+
+	UPROPERTY(EditAnywhere, meta = (AllowedClasses = "Collectable"))
+	AActor* CollectableActor;
+	
+};
+
+UCLASS()
+class UKillObjective : public UObjective
+{
+	GENERATED_BODY()
+
+public:
+
+	UKillObjective();
+
+	virtual void ActivateObjective(AActor* Instigator) override;
+
+	UPROPERTY(EditAnywhere, meta = (AllowedClasses = "ToKillInterface"))
+	AActor* KilledActor;
+	
 };

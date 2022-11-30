@@ -3,12 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/PrimitiveComponent.h"
 #include "Components/SphereComponent.h"
 #include "InteractionComponent.generated.h"
 
+class UUserWidget;
+class UPrimitiveComponent;
 
-UCLASS(ClassGroup=(Collision), meta=(BlueprintSpawnableComponent, DisplayName="InteractionCollision"))
+UCLASS(ClassGroup=(Collision), meta=(BlueprintSpawnableComponent, DisplayName = "InteractionCollision"))
 class QUESTSYSTEM_API UInteractionComponent : public USphereComponent
 {
 	GENERATED_BODY()
@@ -26,13 +27,19 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUserWidget> InteractMessageWidget;
+	TSubclassOf<UUserWidget> InteractMessageWidget;
 
 	UPROPERTY()
-	class UUserWidget* InteractMessage;
+	UUserWidget* InteractMessage;
 
 	UPROPERTY()
 	AActor* ActorToInteract;
+
+	UPROPERTY()
+	AActor* ActorToCollect;
+
+	UPROPERTY()
+	AActor* ActorToKill;
 
 	UFUNCTION()
 	void OnComponentBeginOverlapFunc(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -44,5 +51,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void Interact();
-	
+
+	UFUNCTION(BlueprintCallable)
+	void Kill();
+
+	UFUNCTION(BlueprintCallable)
+	void Collect();
 };

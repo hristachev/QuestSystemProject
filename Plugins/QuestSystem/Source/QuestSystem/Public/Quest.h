@@ -62,5 +62,11 @@ public:
 	UFUNCTION(CallInEditor)
 	void AddLocationObjective();
 
+	UFUNCTION(CallInEditor)
+	void AddKillObjective();
+
+	UFUNCTION(CallInEditor)
+	void AddCollectObjective();
+
 #endif
 };
