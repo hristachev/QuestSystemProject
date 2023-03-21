@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "QuestSystemProjectCharacter.generated.h"
 
+class UQuestList;
+class UQuestListComponent;
 UCLASS(config=Game)
 class AQuestSystemProjectCharacter : public ACharacter
 {
@@ -61,5 +63,15 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	UFUNCTION(BlueprintCallable)
+	void ToggleQuestListVisibility();
+
+	UPROPERTY()
+	UQuestList* QuestList;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UQuestList> QuestListClass;
+	UPROPERTY()
+	UQuestListComponent* QuestListComp;
 };
 

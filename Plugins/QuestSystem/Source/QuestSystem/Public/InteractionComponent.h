@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "InteractionComponent.generated.h"
 
+class UInteractWidget;
 class UUserWidget;
 class UPrimitiveComponent;
 
@@ -30,16 +31,10 @@ public:
 	TSubclassOf<UUserWidget> InteractMessageWidget;
 
 	UPROPERTY()
-	UUserWidget* InteractMessage;
+	UInteractWidget* InteractMessage;
 
 	UPROPERTY()
 	AActor* ActorToInteract;
-
-	UPROPERTY()
-	AActor* ActorToCollect;
-
-	UPROPERTY()
-	AActor* ActorToKill;
 
 	UFUNCTION()
 	void OnComponentBeginOverlapFunc(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -52,9 +47,4 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Interact();
 
-	UFUNCTION(BlueprintCallable)
-	void Kill();
-
-	UFUNCTION(BlueprintCallable)
-	void Collect();
 };

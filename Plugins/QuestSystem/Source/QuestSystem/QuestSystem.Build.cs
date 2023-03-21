@@ -39,7 +39,7 @@ public class QuestSystem : ModuleRules
 				"Slate",
 				"SlateCore",
 				"UMG",
-				"InputCore"
+				"InputCore",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

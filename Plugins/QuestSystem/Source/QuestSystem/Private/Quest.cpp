@@ -17,11 +17,11 @@ void AQuest::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AActor* ParentActor = GetAttachParentActor();
+	/*AActor* ParentActor = GetAttachParentActor();
 	if (ParentActor)
 	{
 		TakeQuest(ParentActor);
-	}
+	}*/
 }
 
 // Called every frame
@@ -69,6 +69,11 @@ void AQuest::OnObjectiveCompleted(UObjective* Objective)
 		{
 			Objectives[Index + 1]->bCanCompleted = true;
 		}
+	}
+
+	if (OnQuestStatusUpdate.IsBound())
+	{
+		OnQuestStatusUpdate.Broadcast(this);
 	}
 }
 

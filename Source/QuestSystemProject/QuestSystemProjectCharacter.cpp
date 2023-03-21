@@ -1,12 +1,16 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "QuestSystemProjectCharacter.h"
+
+#include "QuestList.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AQuestSystemProjectCharacter
@@ -75,6 +79,30 @@ void AQuestSystemProjectCharacter::SetupPlayerInputComponent(class UInputCompone
 	// handle touch devices
 	PlayerInputComponent->BindTouch(IE_Pressed, this, &AQuestSystemProjectCharacter::TouchStarted);
 	PlayerInputComponent->BindTouch(IE_Released, this, &AQuestSystemProjectCharacter::TouchStopped);
+}
+
+void AQuestSystemProjectCharacter::ToggleQuestListVisibility()
+{
+	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+
+	if (QuestList)
+	{
+		QuestList->RemoveFromParent();
+		QuestList = nullptr;
+		UWidgetBlueprintLibrary::SetInputMode_GameOnly(PC);
+		PC->bShowMouseCursor = false;
+	}
+	else
+	{
+		if (QuestListClass)
+		{
+			QuestList = CreateWidget<UQuestList>(GetWorld(), QuestListClass);
+			QuestList->Init(QuestListComp);
+			QuestList->AddToViewport();
+			UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(PC);
+			PC->bShowMouseCursor = true;
+		}
+	}
 }
 
 void AQuestSystemProjectCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)

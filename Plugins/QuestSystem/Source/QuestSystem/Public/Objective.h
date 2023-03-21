@@ -40,6 +40,7 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	bool bCanCompleted;
 	
+	FName WorldTargetName = NAME_None;
 };
 
 UCLASS()

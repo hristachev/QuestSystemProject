@@ -8,6 +8,8 @@
 
 class UObjective;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnQuestStatusUpdate, AQuest*);
+
 UCLASS()
 class QUESTSYSTEM_API AQuest : public AActor
 {
@@ -52,7 +54,15 @@ public:
 	UFUNCTION()
 	void TakeQuest(AActor* Character);
 
+	FOnQuestStatusUpdate OnQuestStatusUpdate;
+
 	void OnObjectiveCompleted(UObjective* Objective);
+
+	const TArray<UObjective*>& GetObjectives() const { return Objectives;}
+
+	FText GetName() { return Name; }
+
+	AQuest* GetPreviousQuest() { return PreviousQuest;}
 
 #if WITH_EDITOR
 

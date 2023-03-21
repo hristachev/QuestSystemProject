@@ -4,10 +4,12 @@
 #include "InteractionComponent.h"
 #include "Collectable.h"
 #include "InteractableObject.h"
+#include "InteractWidget.h"
 #include "ToKillInterface.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/ActorComponent.h"
 #include "Components/PrimitiveComponent.h"
+#include "Components/TextBlock.h"
 
 
 // Sets default values for this component's properties
@@ -44,21 +46,23 @@ void UInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 void UInteractionComponent::OnComponentBeginOverlapFunc(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!OtherActor->Implements<UInteractableObject>() && !OtherActor->Implements<UToKillInterface>() && !OtherActor->Implements<UCollectable>())
+	if (!OtherActor->Implements<UInteractableObject>())
 	{
 		return;
 	}
 
-	if(OtherActor->Implements<UInteractableObject>())
-		ActorToInteract = OtherActor;
-	if(OtherActor->Implements<UToKillInterface>())
-		ActorToKill = OtherActor;
-	if (OtherActor->Implements<UCollectable>())
-		ActorToCollect = OtherActor;
-//
+	ActorToInteract = OtherActor;
+
 	if (InteractMessage == nullptr && InteractMessageWidget)
 	{
-		InteractMessage = CreateWidget(GetWorld(), InteractMessageWidget);
+		InteractMessage = CreateWidget<UInteractWidget>(GetWorld(), InteractMessageWidget);
+	}
+
+	if (InteractMessage)
+	{
+		const FText InteractText = FText::Format(FText::FromString(TEXT("{0}  [E]")),
+			IInteractableObject::Execute_GetInteractionText(ActorToInteract));
+		InteractMessage->InteractText->SetText(InteractText);
 	}
 
 	if (InteractMessage && !InteractMessage->IsInViewport())
@@ -70,11 +74,9 @@ void UInteractionComponent::OnComponentBeginOverlapFunc(UPrimitiveComponent* Ove
 void UInteractionComponent::OnComponentEndOverlapFunc(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (ActorToInteract == OtherActor || ActorToKill == OtherActor || ActorToCollect == OtherActor)
+	if (ActorToInteract == OtherActor)
 	{
 		ActorToInteract = nullptr;
-		ActorToKill = nullptr;
-		ActorToCollect = nullptr;
 
 		if (InteractMessage)
 		{
@@ -88,22 +90,6 @@ void UInteractionComponent::Interact()
 	if (ActorToInteract)
 	{
 		IInteractableObject::Execute_Interact(ActorToInteract, GetOwner());
-	}
-}
-
-void UInteractionComponent::Kill()
-{
-	if (ActorToKill)
-	{
-		IToKillInterface::Execute_Kill(ActorToKill, GetOwner());
-	}
-}
-
-void UInteractionComponent::Collect()
-{
-	if (ActorToCollect)
-	{
-		ICollectable::Execute_Collect(ActorToCollect, GetOwner());
 	}
 }
 

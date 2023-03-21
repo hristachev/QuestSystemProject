@@ -26,6 +26,12 @@ public:
 	UFUNCTION()
 	virtual void Interact_Implementation(AActor* InteractInstigator) {};
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	FText GetInteractionText();
+
+	UFUNCTION()
+	virtual FText GetInteractionText_Implementation() { return FText::FromString(TEXT("Interact")); }
+	
 	virtual void NotifyInteractionFinished(AActor* InteractObject, AActor* InteractInstigator)
 	{
 			OnInteractionFinished.Broadcast(InteractObject, InteractInstigator);
